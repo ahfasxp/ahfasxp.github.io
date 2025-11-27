@@ -372,8 +372,8 @@
                   <p class="text-sm font-semibold text-gray-800 break-words">${result.tick} poin</p>
                 </div>
                 <div class="bg-gray-50 rounded-lg p-2.5">
-                  <p class="text-xs text-gray-500 mb-1">5% Profit</p>
-                  <p class="text-sm font-semibold text-gray-800 break-words">${formatNumber(result.fivePercent)}</p>
+                  <p class="text-xs text-gray-500 mb-1">5% Buy Avg</p>
+                  <p class="text-sm font-semibold text-gray-800 break-words">${formatNumber(result.fivePercent)} poin</p>
                 </div>
               </div>
             </div>
@@ -400,7 +400,7 @@
                   <span class="font-medium break-words text-right">${formatNumber(result.jumlahPapan)}</span>
                 </div>
                 <div class="flex justify-between gap-2">
-                  <span class="text-gray-600 flex-shrink-0">Rata/Papan:</span>
+                  <span class="text-gray-600 flex-shrink-0">Rata Per Papan:</span>
                   <span class="font-medium break-words text-right">${formatNumber(result.rataPerPapan)} lot</span>
                 </div>
               </div>
@@ -437,16 +437,15 @@
         `Buy Avg: Rp ${formatNumber(result.buyAvg)}`,
         `Buy Lot: ${formatNumber(result.buyLot)} lot`,
         `Tick size: ${result.tick} poin`,
-        `5% dari Buy Avg = ${formatNumber(result.fivePercent)} poin`,
+        `5% Buy Avg = ${formatNumber(result.fivePercent)} poin`,
         ``,
         `Total Bid: ${formatNumber(result.totalBid)} lot  |  Total Offer: ${formatNumber(result.totalOffer)} lot`,
         `Jumlah Papan: ${formatNumber(result.jumlahPapan)}`,
-        `Rata per papan = (Bid + Offer) / Jumlah Papan = ${formatNumber(result.rataPerPapan)} lot`,
+        `Rata per papan = ${formatNumber(result.rataPerPapan)} lot`,
         ``,
         `Papan terdorong = Buy Lot / Rata per Papan`,
         `  HIGH: ${formatNumber(result.papanCountHigh)} papan`,
         `  LOW: ${formatNumber(result.papanCountLow)} papan`,
-        ``,
         ``,
         `TARGET LOW:`,
         `  = ${formatNumber(result.buyAvg)} + ${formatNumber(result.fivePercent)} + ${formatNumber(result.papanCountLow)}`,
