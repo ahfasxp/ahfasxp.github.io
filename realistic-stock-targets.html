@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculator Target Realistis — Saham</title>
+  <title>Target Realistis Saham</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -22,9 +22,8 @@
   <div class="max-w-5xl mx-auto">
     <div class="text-center mb-6">
       <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
-        Calculator Target Realistis — Saham
+        Target Realistis Saham
       </h1>
-      <p class="text-gray-600 text-sm">Target = BuyAvg + 5% + (Papan × TickSize) | Tick BEI</p>
     </div>
 
     <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8 mb-6">
@@ -198,7 +197,7 @@
 
       const tick = getTickSize(buyAvgVal);
       const jumlahPapan = ((araVal - arbVal) / tick) + 1;
-      jumlahPapanInput.placeholder = `Auto: ${formatNumber(jumlahPapan)}`;
+      jumlahPapanInput.value = `Auto: ${formatNumber(jumlahPapan)}`;
     }
 
     function handleCalculate() {
@@ -245,7 +244,7 @@
       // 5% dari Buy Avg
       const fivePercent = buyAvgVal * 0.05;
       
-      // Points dari papan = Jumlah Papan × Tick Size
+      // Points dari papan = Jumlah Papan
       const pointsFromPapanHigh = papanCountHigh;
       const pointsFromPapanLow = papanCountLow;
       
@@ -438,16 +437,16 @@
         `Buy Avg: Rp ${formatNumber(result.buyAvg)}`,
         `Buy Lot: ${formatNumber(result.buyLot)} lot`,
         `Tick size: ${result.tick} poin`,
+        `5% dari Buy Avg = ${formatNumber(result.fivePercent)} poin`,
         ``,
-        `Jumlah Papan: ${formatNumber(result.jumlahPapan)}`,
         `Total Bid: ${formatNumber(result.totalBid)} lot  |  Total Offer: ${formatNumber(result.totalOffer)} lot`,
+        `Jumlah Papan: ${formatNumber(result.jumlahPapan)}`,
         `Rata per papan = (Bid + Offer) / Jumlah Papan = ${formatNumber(result.rataPerPapan)} lot`,
         ``,
         `Papan terdorong = Buy Lot / Rata per Papan`,
         `  HIGH: ${formatNumber(result.papanCountHigh)} papan`,
         `  LOW: ${formatNumber(result.papanCountLow)} papan`,
         ``,
-        `5% dari Buy Avg = ${formatNumber(result.fivePercent)} poin`,
         ``,
         `TARGET LOW:`,
         `  = ${formatNumber(result.buyAvg)} + ${formatNumber(result.fivePercent)} + ${formatNumber(result.papanCountLow)}`,
