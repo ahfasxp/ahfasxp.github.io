@@ -197,7 +197,7 @@
       const jumlahPapanInput = document.getElementById('jumlahPapan');
 
       const tick = getTickSize(buyAvgVal);
-      const jumlahPapan = (araVal - arbVal / tick) + 1;
+      const jumlahPapan = ((araVal - arbVal) / tick) + 1;
       jumlahPapanInput.placeholder = `Auto: ${formatNumber(jumlahPapan)}`;
     }
 
@@ -228,7 +228,7 @@
         jumlahPapan = jumlahPapanManual;
         papanSource = 'manual';
       } else if (araVal > 0 && arbVal > 0 && araVal > arbVal) {
-        jumlahPapan = (araVal - arbVal / tick) + 1;
+        jumlahPapan = ((araVal - arbVal) / tick) + 1;
         papanSource = 'auto';
       } else {
         alert('Offer Tertinggi harus lebih besar dari Bid Terendah');
