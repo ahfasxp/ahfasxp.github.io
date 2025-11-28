@@ -5,13 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Target Realistis Saham</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {}
-      }
-    }
-  </script>
   <style>
     body {
       font-family: system-ui, -apple-system, sans-serif;
@@ -53,24 +46,24 @@
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Tick Size</label>
-          <input type="text" id="tickSize" readonly disabled="true" placeholder="Auto" class="w-full px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-600">
+          <input type="text" id="tickSize" disabled placeholder="Auto" class="w-full px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-600">
         </div>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Bid Terendah</label>
-          <input type="number" id="arb" placeholder="250" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          <input type="number" id="bidTerendah" placeholder="250" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Offer Tertinggi</label>
-          <input type="number" id="ara" placeholder="200" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          <input type="number" id="offerTertinggi" placeholder="200" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
         </div>
       </div>
 
       <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700 mb-1">Jumlah Papan</label>
-        <input type="number" id="jumlahPapan" readonly disabled="true" placeholder="Auto" class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-600">
+        <input type="text" id="jumlahPapan" disabled placeholder="Auto" class="w-full px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-600">
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -94,7 +87,7 @@
         </button>
       </div>
 
-      <p class="text-xs text-gray-500 mt-4">* Buy Avg wajib diisi. Isi ARA & ARB ATAU Jumlah Papan.</p>
+      <p class="text-xs text-gray-500 mt-4">* Buy Avg wajib diisi. Isi Bid Terendah & Offer Tertinggi untuk auto calculate Jumlah Papan.</p>
     </div>
 
     <div id="historySection" class="hidden bg-white rounded-2xl shadow-xl p-6 md:p-8"></div>
@@ -104,44 +97,146 @@
     let history = [];
     let expandedItems = {};
 
-    window.addEventListener('DOMContentLoaded', () => {
-      const today = new Date().toISOString().split('T')[0];
-      document.getElementById('tanggal').value = today;
-      
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      setTodayDate();
       loadHistory();
-      
-      document.getElementById('buyAvg').addEventListener('input', (e) => {
-        const buyAvg = parseFloat(e.target.value);
-        if (buyAvg) {
-          document.getElementById('tickSize').value = getTickSize(buyAvg) + ' poin';
-        } else {
-          document.getElementById('tickSize').value = '';
-        }
-      });
+      setupEventListeners();
+    });
 
-      document.getElementById('emiten').addEventListener('input', (e) => {
-        e.target.value = e.target.value.toUpperCase();
-      });
-      document.getElementById('broker').addEventListener('input', (e) => {
-        e.target.value = e.target.value.toUpperCase();
-      });
+    function setTodayDate() {
+      document.getElementById('tanggal').value = new Date().toISOString().split('T')[0];
+    }
 
-      document.getElementById('ara').addEventListener('input', updateJumlahPapan);
-      document.getElementById('arb').addEventListener('input', updateJumlahPapan);
-
+    function setupEventListeners() {
+      document.getElementById('buyAvg').addEventListener('input', handleBuyAvgChange);
+      document.getElementById('emiten').addEventListener('input', e => e.target.value = e.target.value.toUpperCase());
+      document.getElementById('broker').addEventListener('input', e => e.target.value = e.target.value.toUpperCase());
+      document.getElementById('offerTertinggi').addEventListener('input', updateJumlahPapan);
+      document.getElementById('bidTerendah').addEventListener('input', updateJumlahPapan);
       document.getElementById('btnCalculate').addEventListener('click', handleCalculate);
       document.getElementById('btnReset').addEventListener('click', handleReset);
-    });
+    }
+
+    function handleBuyAvgChange(e) {
+      const buyAvg = parseFloat(e.target.value);
+      document.getElementById('tickSize').value = buyAvg ? `${getTickSize(buyAvg)} poin` : '';
+      updateJumlahPapan();
+    }
+
+    function updateJumlahPapan() {
+      const buyAvg = parseFloat(document.getElementById('buyAvg').value) || 0;
+      const offerTertinggi = parseFloat(document.getElementById('offerTertinggi').value) || 0;
+      const bidTerendah = parseFloat(document.getElementById('bidTerendah').value) || 0;
+
+      if (buyAvg && offerTertinggi && bidTerendah && offerTertinggi > bidTerendah) {
+        const tick = getTickSize(buyAvg);
+        const jumlahPapan = ((offerTertinggi - bidTerendah) / tick) + 1;
+        document.getElementById('jumlahPapan').value = formatNumber(jumlahPapan);
+      } else {
+        document.getElementById('jumlahPapan').value = '';
+      }
+    }
+
+    function getTickSize(price) {
+      const p = Number(price) || 0;
+      if (p <= 200) return 1;
+      if (p <= 500) return 2;
+      if (p <= 2000) return 5;
+      if (p <= 5000) return 10;
+      return 25;
+    }
+
+    function formatNumber(num) {
+      if (isNaN(num) || num === null) return '0';
+      const rounded = Math.round(num * 100) / 100;
+      return Number(rounded).toLocaleString('id-ID', {
+        minimumFractionDigits: rounded === Math.floor(rounded) ? 0 : 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function round2(num) {
+      return Math.round(num * 100) / 100;
+    }
+
+    function handleCalculate() {
+      const tanggal = document.getElementById('tanggal').value;
+      const emiten = document.getElementById('emiten').value || '-';
+      const broker = document.getElementById('broker').value || '-';
+      const buyLot = Number(document.getElementById('buyLot').value) || 0;
+      const buyAvg = Number(document.getElementById('buyAvg').value) || 0;
+      const bidTerendah = Number(document.getElementById('bidTerendah').value) || 0;
+      const offerTertinggi = Number(document.getElementById('offerTertinggi').value) || 0;
+      const totalBid = Number(document.getElementById('totalBid').value) || 0;
+      const totalOffer = Number(document.getElementById('totalOffer').value) || 0;
+
+      if (!buyAvg || buyAvg <= 0) {
+        alert('Buy Avg harus diisi dengan nilai yang valid');
+        return;
+      }
+
+      const tick = getTickSize(buyAvg);
+      let jumlahPapan = 0;
+
+      if (offerTertinggi > 0 && bidTerendah > 0 && offerTertinggi > bidTerendah) {
+        jumlahPapan = ((offerTertinggi - bidTerendah) / tick) + 1;
+      } else {
+        alert('Offer Tertinggi harus lebih besar dari Bid Terendah');
+        return;
+      }
+
+      const rataPerPapan = (totalBid + totalOffer) / jumlahPapan;
+      const papanCountHigh = rataPerPapan > 0 ? (buyLot / rataPerPapan) : 0;
+      const papanCountLow = papanCountHigh / 2;
+      const fivePercent = buyAvg * 0.05;
+      const targetHigh = buyAvg + fivePercent + papanCountHigh;
+      const targetLow = buyAvg + fivePercent + papanCountLow;
+      const percentLow = ((targetLow - buyAvg) / buyAvg) * 100;
+      const percentHigh = ((targetHigh - buyAvg) / buyAvg) * 100;
+
+      const result = {
+        timestamp: new Date().toISOString(),
+        tanggal,
+        dateDisplay: tanggal ? new Date(tanggal + 'T00:00:00').toLocaleDateString('id-ID', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric'
+        }) : '-',
+        emiten,
+        broker,
+        buyLot: round2(buyLot),
+        buyAvg: round2(buyAvg),
+        bidTerendah: round2(bidTerendah),
+        offerTertinggi: round2(offerTertinggi),
+        totalBid: round2(totalBid),
+        totalOffer: round2(totalOffer),
+        jumlahPapan: round2(jumlahPapan),
+        rataPerPapan: round2(rataPerPapan),
+        papanCountHigh: round2(papanCountHigh),
+        papanCountLow: round2(papanCountLow),
+        tick,
+        fivePercent: round2(fivePercent),
+        targetHigh: round2(targetHigh),
+        targetLow: round2(targetLow),
+        percentLow: round2(percentLow),
+        percentHigh: round2(percentHigh)
+      };
+
+      saveToHistory(result);
+    }
+
+    function handleReset() {
+      setTodayDate();
+      ['emiten', 'broker', 'buyLot', 'buyAvg', 'bidTerendah', 'offerTertinggi', 'jumlahPapan', 'totalBid', 'totalOffer', 'tickSize']
+        .forEach(id => document.getElementById(id).value = '');
+    }
 
     function loadHistory() {
       try {
         const stored = localStorage.getItem('calc_history');
-        if (stored) {
-          history = JSON.parse(stored);
-          history.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-        } else {
-          history = [];
-        }
+        history = stored ? JSON.parse(stored) : [];
+        history.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         renderHistory();
       } catch (e) {
         console.error('Error loading history:', e);
@@ -161,151 +256,6 @@
       }
     }
 
-    function getTickSize(price) {
-      const p = Number(price) || 0;
-      if (p <= 200) return 1;
-      if (p <= 500) return 2;
-      if (p <= 2000) return 5;
-      if (p <= 5000) return 10;
-      return 25;
-    }
-
-    function formatNumber(num) {
-      if (isNaN(num) || num === null) return '0';
-      const rounded = Math.round(num * 100) / 100;
-      if (rounded === Math.floor(rounded)) {
-        return Number(rounded).toLocaleString('id-ID', {
-          minimumFractionDigits: 0,
-          maximumFractionDigits: 0
-        });
-      }
-      return Number(rounded).toLocaleString('id-ID', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      });
-    }
-
-    function round2(num) {
-      return Math.round(num * 100) / 100;
-    }
-
-    function updateJumlahPapan() {
-      const buyAvgVal = Number(document.getElementById('buyAvg').value) || 0;
-      const araVal = parseFloat(document.getElementById('ara').value) || 0;
-      const arbVal = parseFloat(document.getElementById('arb').value) || 0;
-      const jumlahPapanInput = document.getElementById('jumlahPapan');
-
-      const tick = getTickSize(buyAvgVal);
-      const jumlahPapan = ((araVal - arbVal) / tick) + 1;
-      jumlahPapanInput.value = `Auto: ${formatNumber(jumlahPapan)}`;
-    }
-
-    function handleCalculate() {
-      const tanggalVal = document.getElementById('tanggal').value;
-      const emitenVal = document.getElementById('emiten').value || '-';
-      const brokerVal = document.getElementById('broker').value || '-';
-      
-      // Ambil nilai input (belum dibulatkan)
-      const buyLotVal = Number(document.getElementById('buyLot').value) || 0;
-      const buyAvgVal = Number(document.getElementById('buyAvg').value) || 0;
-      const arbVal = Number(document.getElementById('arb').value) || 0;
-      const araVal = Number(document.getElementById('ara').value) || 0;
-      const totalBidVal = Number(document.getElementById('totalBid').value) || 0;
-      const totalOfferVal = Number(document.getElementById('totalOffer').value) || 0;
-      const jumlahPapanManual = Number(document.getElementById('jumlahPapan').value) || 0;
-
-      if (!buyAvgVal || buyAvgVal <= 0) {
-        alert('Buy Avg harus diisi dengan nilai yang valid');
-        return;
-      }
-
-      let jumlahPapan = 0;
-      let papanSource = 'auto';
-      const tick = getTickSize(buyAvgVal);
-      
-      if (jumlahPapanManual > 0) {
-        jumlahPapan = jumlahPapanManual;
-        papanSource = 'manual';
-      } else if (araVal > 0 && arbVal > 0 && araVal > arbVal) {
-        jumlahPapan = ((araVal - arbVal) / tick) + 1;
-        papanSource = 'auto';
-      } else {
-        alert('Offer Tertinggi harus lebih besar dari Bid Terendah');
-        return;
-      }
-
-      // RUMUS: Rata per Papan = (Total Bid + Total Offer) / jumlahPapan
-      const rataPerPapan = (totalBidVal + totalOfferVal) / jumlahPapan;
-
-      // Jumlah papan yang terdorong = Buy Lot / Rata per Papan
-      const papanCountHigh = rataPerPapan > 0 ? (buyLotVal / rataPerPapan) : 0;
-      const papanCountLow = papanCountHigh / 2;
-      
-      // 5% dari Buy Avg
-      const fivePercent = buyAvgVal * 0.05;
-      
-      // Points dari papan = Jumlah Papan
-      const pointsFromPapanHigh = papanCountHigh;
-      const pointsFromPapanLow = papanCountLow;
-      
-      // Target = Buy Avg + 5% + Points dari Papan
-      const targetHigh = buyAvgVal + fivePercent + pointsFromPapanHigh;
-      const targetLow = buyAvgVal + fivePercent + pointsFromPapanLow;
-
-      const percentLow = ((targetLow - buyAvgVal) / buyAvgVal) * 100;
-      const percentHigh = ((targetHigh - buyAvgVal) / buyAvgVal) * 100;
-
-      // Bulatkan semua hasil di akhir untuk konsistensi
-      const result = {
-        timestamp: new Date().toISOString(),
-        tanggal: tanggalVal,
-        dateDisplay: tanggalVal ? new Date(tanggalVal + 'T00:00:00').toLocaleDateString('id-ID', {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric'
-        }) : '-',
-        emiten: emitenVal,
-        broker: brokerVal,
-        buyLot: round2(buyLotVal),
-        buyAvg: round2(buyAvgVal),
-        arb: round2(arbVal),
-        ara: round2(araVal),
-        totalBid: round2(totalBidVal),
-        totalOffer: round2(totalOfferVal),
-        jumlahPapan: round2(jumlahPapan),
-        papanSource,
-        rataPerPapan: round2(rataPerPapan),
-        papanCountHigh: round2(papanCountHigh),
-        papanCountLow: round2(papanCountLow),
-        tick,
-        pointsFromPapanHigh: round2(pointsFromPapanHigh),
-        pointsFromPapanLow: round2(pointsFromPapanLow),
-        fivePercent: round2(fivePercent),
-        targetHigh: round2(targetHigh),
-        targetLow: round2(targetLow),
-        percentLow: round2(percentLow),
-        percentHigh: round2(percentHigh)
-      };
-
-
-      saveToHistory(result);
-    }
-
-    function handleReset() {
-      const today = new Date().toISOString().split('T')[0];
-      document.getElementById('tanggal').value = today;
-      document.getElementById('emiten').value = '';
-      document.getElementById('broker').value = '';
-      document.getElementById('buyLot').value = '';
-      document.getElementById('buyAvg').value = '';
-      document.getElementById('arb').value = '';
-      document.getElementById('ara').value = '';
-      document.getElementById('jumlahPapan').value = '';
-      document.getElementById('totalBid').value = '';
-      document.getElementById('totalOffer').value = '';
-      document.getElementById('tickSize').value = '';
-    }
-
     function renderHistory() {
       const container = document.getElementById('historySection');
       
@@ -314,20 +264,9 @@
         return;
       }
 
-      let html = `
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-2xl font-bold text-gray-800">Hasil Perhitungan</h2>
-          <button onclick="handleClearAllHistory()" class="text-sm bg-red-100 hover:bg-red-200 text-red-600 px-4 py-2 rounded-lg transition-colors">
-            Hapus semua
-          </button>
-        </div>
-        <p class="text-sm text-gray-500 mb-4">Riwayat perhitungan tersimpan otomatis</p>
-        <div class="space-y-4">
-      `;
-
-      history.forEach((result, index) => {
+      const historyHTML = history.map(result => {
         const isExpanded = expandedItems[result.timestamp];
-        html += `
+        return `
           <div class="border border-gray-200 rounded-xl overflow-hidden hover:shadow-md transition-all bg-white">
             <div class="p-5">
               <div class="flex justify-between items-start mb-4">
@@ -380,12 +319,12 @@
 
             <button onclick="toggleExpand('${result.timestamp}')" class="w-full text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-50 font-medium flex items-center justify-center gap-2 py-3 border-t border-gray-200 transition-colors">
               <span>Detail perhitungan</span>
-              <svg id="chevron-${result.timestamp}" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform ${isExpanded ? 'rotate-180' : ''}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform ${isExpanded ? 'rotate-180' : ''}">
                 <polyline points="6 9 12 15 18 9"/>
               </svg>
             </button>
             
-            <div id="details-${result.timestamp}" class="p-5 bg-gray-50 text-xs space-y-2 border-t border-gray-200 ${isExpanded ? '' : 'hidden'}">
+            <div class="p-5 bg-gray-50 text-xs space-y-2 border-t border-gray-200 ${isExpanded ? '' : 'hidden'}">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
                 <div class="flex justify-between gap-2">
                   <span class="text-gray-600 flex-shrink-0">Total Bid:</span>
@@ -415,10 +354,18 @@
             </div>
           </div>
         `;
-      });
+      }).join('');
 
-      html += '</div>';
-      container.innerHTML = html;
+      container.innerHTML = `
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-2xl font-bold text-gray-800">Hasil Perhitungan</h2>
+          <button onclick="handleClearAllHistory()" class="text-sm bg-red-100 hover:bg-red-200 text-red-600 px-4 py-2 rounded-lg transition-colors">
+            Hapus semua
+          </button>
+        </div>
+        <p class="text-sm text-gray-500 mb-4">Riwayat perhitungan tersimpan otomatis</p>
+        <div class="space-y-4">${historyHTML}</div>
+      `;
       container.classList.remove('hidden');
     }
 
@@ -429,7 +376,6 @@
 
     function handleCopy(timestamp) {
       const result = history.find(r => r.timestamp === timestamp);
-      
       if (!result) return;
 
       const details = [
