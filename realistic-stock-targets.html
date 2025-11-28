@@ -87,7 +87,7 @@
         </button>
       </div>
 
-      <p class="text-xs text-gray-500 mt-4">* Buy Avg wajib diisi. Isi Bid Terendah & Offer Tertinggi untuk auto calculate Jumlah Papan.</p>
+      <p class="text-xs text-gray-500 mt-4">* Semua field wajib diisi untuk melakukan perhitungan.</p>
     </div>
 
     <div id="historySection" class="hidden bg-white rounded-2xl shadow-xl p-6 md:p-8"></div>
@@ -175,8 +175,8 @@
 
     function handleCalculate() {
       const tanggal = document.getElementById('tanggal').value;
-      const emiten = document.getElementById('emiten').value || '-';
-      const broker = document.getElementById('broker').value || '-';
+      const emiten = document.getElementById('emiten').value.trim();
+      const broker = document.getElementById('broker').value.trim();
       const buyLot = Number(document.getElementById('buyLot').value) || 0;
       const buyAvg = Number(document.getElementById('buyAvg').value) || 0;
       const bidTerendah = Number(document.getElementById('bidTerendah').value) || 0;
@@ -184,21 +184,50 @@
       const totalBid = Number(document.getElementById('totalBid').value) || 0;
       const totalOffer = Number(document.getElementById('totalOffer').value) || 0;
 
+      // Validasi semua field wajib diisi
+      if (!tanggal) {
+        alert('Tanggal harus diisi');
+        return;
+      }
+      if (!emiten) {
+        alert('Emiten harus diisi');
+        return;
+      }
+      if (!broker) {
+        alert('Broker harus diisi');
+        return;
+      }
+      if (!buyLot || buyLot <= 0) {
+        alert('Buy Lot harus diisi dengan nilai yang valid');
+        return;
+      }
       if (!buyAvg || buyAvg <= 0) {
         alert('Buy Avg harus diisi dengan nilai yang valid');
         return;
       }
-
-      const tick = getTickSize(buyAvg);
-      let jumlahPapan = 0;
-
-      if (offerTertinggi > 0 && bidTerendah > 0 && offerTertinggi > bidTerendah) {
-        jumlahPapan = ((offerTertinggi - bidTerendah) / tick) + 1;
-      } else {
+      if (!bidTerendah || bidTerendah <= 0) {
+        alert('Bid Terendah harus diisi dengan nilai yang valid');
+        return;
+      }
+      if (!offerTertinggi || offerTertinggi <= 0) {
+        alert('Offer Tertinggi harus diisi dengan nilai yang valid');
+        return;
+      }
+      if (offerTertinggi <= bidTerendah) {
         alert('Offer Tertinggi harus lebih besar dari Bid Terendah');
         return;
       }
+      if (!totalBid || totalBid <= 0) {
+        alert('Total Bid harus diisi dengan nilai yang valid');
+        return;
+      }
+      if (!totalOffer || totalOffer <= 0) {
+        alert('Total Offer harus diisi dengan nilai yang valid');
+        return;
+      }
 
+      const tick = getTickSize(buyAvg);
+      const jumlahPapan = ((offerTertinggi - bidTerendah) / tick) + 1;
       const rataPerPapan = (totalBid + totalOffer) / jumlahPapan;
       const papanCountHigh = rataPerPapan > 0 ? (buyLot / rataPerPapan) : 0;
       const papanCountLow = papanCountHigh / 2;
