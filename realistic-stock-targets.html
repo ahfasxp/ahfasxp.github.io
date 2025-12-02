@@ -95,9 +95,9 @@
         </div>
       </div>
 
-      <div class="flex gap-3">
+      <div class="flex gap-3 flex-wrap">
         <button id="btnCalculate"
-          class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2">
+          class="flex-[2] bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="4" y="2" width="16" height="20" rx="2" />
             <line x1="8" y1="6" x2="16" y2="6" />
@@ -108,7 +108,7 @@
           Hitung
         </button>
         <button id="btnReset"
-          class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-3 px-6 rounded-lg transition-colors">
+          class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-3 px-6 rounded-lg transition-colors">
           Reset
         </button>
       </div>
@@ -331,126 +331,140 @@
       const historyHTML = history.map(result => {
         const isExpanded = expandedItems[result.timestamp];
         return `
-          <div class="border border-gray-200 rounded-xl overflow-hidden hover:shadow-md transition-all bg-white">
-            <div class="p-5">
-              <div class="flex justify-between items-start mb-4">
-                <div>
-                  <h3 class="text-xl font-bold text-gray-800">${result.emiten}</h3>
-                  <p class="text-xs text-gray-500 mt-1">${result.dateDisplay} • Broker ${result.broker}</p>
-                </div>
-                <div class="flex gap-2">
-                  <button onclick="handleCopy('${result.timestamp}')" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Salin detail">
-                    <svg id="copyIcon-${result.timestamp}" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                  </button>
-                  <button onclick="handleDeleteHistory('${result.timestamp}')" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Hapus">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                  </button>
-                </div>
-              </div>
-
-              <div class="grid grid-cols-2 gap-3 mb-4">
-                <div class="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-lg p-4">
-                  <p class="text-xs text-gray-600 mb-1">🎯 Target LOW</p>
-                  <p class="text-2xl font-bold text-green-600">Rp ${formatNumber(result.targetLow)}</p>
-                  <p class="text-sm font-semibold text-green-600 mt-1">+${formatNumber(result.percentLow)}%</p>
-                </div>
-                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4">
-                  <p class="text-xs text-gray-600 mb-1">🚀 Target HIGH</p>
-                  <p class="text-2xl font-bold text-blue-600">Rp ${formatNumber(result.targetHigh)}</p>
-                  <p class="text-sm font-semibold text-blue-600 mt-1">+${formatNumber(result.percentHigh)}%</p>
-                </div>
-              </div>
-
-              <button onclick="toggleExpand('${result.timestamp}')" class="w-full text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-50 font-medium flex items-center justify-center gap-2 py-3 border-t border-gray-200 transition-colors">
-                <span>${isExpanded ? 'Sembunyikan' : 'Lihat'} detail perhitungan</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform ${isExpanded ? 'rotate-180' : ''}">
-                  <polyline points="6 9 12 15 18 9"/>
-                </svg>
+      <div class="border border-gray-200 rounded-xl overflow-hidden hover:shadow-md transition-all bg-white">
+        <div class="p-5">
+          <div class="flex justify-between items-start mb-4 gap-3">
+            <div class="flex-1 min-w-0">
+              <h3 class="text-xl font-bold text-gray-800 truncate">${result.emiten}</h3>
+              <p class="text-xs text-gray-500 mt-1 truncate">${result.dateDisplay} • Broker ${result.broker}</p>
+            </div>
+            <div class="flex gap-2 flex-shrink-0">
+              <button onclick="handleCopy('${result.timestamp}')" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Salin detail">
+                <svg id="copyIcon-${result.timestamp}" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              </button>
+              <button onclick="handleDeleteHistory('${result.timestamp}')" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Hapus">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
               </button>
             </div>
-            
-            <div class="bg-gray-50 border-t border-gray-200 ${isExpanded ? '' : 'hidden'}">
-              <div class="p-5 space-y-4">
-                <div>
-                  <h4 class="text-sm font-semibold text-gray-700 mb-2">Data Input</h4>
-                  <div class="grid grid-cols-2 gap-x-4 gap-y-1.5 text-xs">
-                    <div class="flex justify-between"><span class="text-gray-600">Buy Average:</span><span class="font-medium">Rp ${formatNumber(result.buyAvg)}</span></div>
-                    <div class="flex justify-between"><span class="text-gray-600">Buy Lot:</span><span class="font-medium">${formatNumber(result.buyLot)} lot</span></div>
-                    <div class="flex justify-between"><span class="text-gray-600">Bid Terendah:</span><span class="font-medium">Rp ${formatNumber(result.bidTerendah)}</span></div>
-                    <div class="flex justify-between"><span class="text-gray-600">Offer Tertinggi:</span><span class="font-medium">Rp ${formatNumber(result.offerTertinggi)}</span></div>
-                    <div class="flex justify-between"><span class="text-gray-600">Total Bid:</span><span class="font-medium">${formatNumber(result.totalBid)} lot</span></div>
-                    <div class="flex justify-between"><span class="text-gray-600">Total Offer:</span><span class="font-medium">${formatNumber(result.totalOffer)} lot</span></div>
-                    <div class="flex justify-between"><span class="text-gray-600">Tick Size:</span><span class="font-medium">${result.tick} poin</span></div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+            <div class="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-lg p-4 min-w-0">
+              <p class="text-xs text-gray-600 mb-1">🎯 Target LOW</p>
+              <p class="text-lg sm:text-xl md:text-2xl font-bold text-green-600 break-all">Rp ${formatNumber(result.targetLow)}</p>
+              <p class="text-xs sm:text-sm font-semibold text-green-600 mt-1 break-all">+${formatNumber(result.percentLow)}%</p>
+            </div>
+            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4 min-w-0">
+              <p class="text-xs text-gray-600 mb-1">🚀 Target HIGH</p>
+              <p class="text-lg sm:text-xl md:text-2xl font-bold text-blue-600 break-all">Rp ${formatNumber(result.targetHigh)}</p>
+              <p class="text-xs sm:text-sm font-semibold text-blue-600 mt-1 break-all">+${formatNumber(result.percentHigh)}%</p>
+            </div>
+          </div>
+
+          <button onclick="toggleExpand('${result.timestamp}')" class="w-full text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-50 font-medium flex items-center justify-center gap-2 py-3 border-t border-gray-200 transition-colors">
+            <span>${isExpanded ? 'Sembunyikan' : 'Lihat'} detail perhitungan</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform ${isExpanded ? 'rotate-180' : ''}">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+        </div>
+        
+        <div class="bg-gray-50 border-t border-gray-200 ${isExpanded ? '' : 'hidden'}">
+          <div class="p-5 space-y-4">
+            <div>
+              <h4 class="text-sm font-semibold text-gray-700 mb-2">Data Input</h4>
+              <div class="overflow-x-auto">
+                <div class="grid grid-cols-2 gap-x-4 gap-y-1.5 text-xs min-w-max">
+                  <div class="flex justify-between whitespace-nowrap"><span class="text-gray-600">Buy Average:</span><span class="font-medium ml-2">Rp ${formatNumber(result.buyAvg)}</span></div>
+                  <div class="flex justify-between whitespace-nowrap"><span class="text-gray-600">Buy Lot:</span><span class="font-medium ml-2">${formatNumber(result.buyLot)} lot</span></div>
+                  <div class="flex justify-between whitespace-nowrap"><span class="text-gray-600">Bid Terendah:</span><span class="font-medium ml-2">Rp ${formatNumber(result.bidTerendah)}</span></div>
+                  <div class="flex justify-between whitespace-nowrap"><span class="text-gray-600">Offer Tertinggi:</span><span class="font-medium ml-2">Rp ${formatNumber(result.offerTertinggi)}</span></div>
+                  <div class="flex justify-between whitespace-nowrap"><span class="text-gray-600">Total Bid:</span><span class="font-medium ml-2">${formatNumber(result.totalBid)} lot</span></div>
+                  <div class="flex justify-between whitespace-nowrap"><span class="text-gray-600">Total Offer:</span><span class="font-medium ml-2">${formatNumber(result.totalOffer)} lot</span></div>
+                  <div class="flex justify-between whitespace-nowrap"><span class="text-gray-600">Tick Size:</span><span class="font-medium ml-2">${result.tick} poin</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="border-t border-gray-200 pt-4">
+              <h4 class="text-sm font-semibold text-gray-700 mb-3">Proses Perhitungan</h4>
+              
+              <div class="space-y-3 text-xs">
+                <div class="bg-white rounded-lg p-3 border border-gray-200">
+                  <p class="font-medium text-gray-700 mb-1">1. Jumlah Papan Harga</p>
+                  <div class="overflow-x-auto">
+                    <p class="text-gray-600 whitespace-nowrap">= ((Offer Tertinggi - Bid Terendah) / Tick Size) + 1</p>
+                    <p class="text-gray-600 whitespace-nowrap">= ((${formatNumber(result.offerTertinggi)} - ${formatNumber(result.bidTerendah)}) / ${result.tick}) + 1</p>
                   </div>
+                  <p class="font-semibold text-blue-600 mt-1 break-all">= ${formatNumber(result.jumlahPapan)} papan</p>
                 </div>
 
-                <div class="border-t border-gray-200 pt-4">
-                  <h4 class="text-sm font-semibold text-gray-700 mb-3">Proses Perhitungan</h4>
-                  
-                  <div class="space-y-3 text-xs">
-                    <div class="bg-white rounded-lg p-3 border border-gray-200">
-                      <p class="font-medium text-gray-700 mb-1">1. Jumlah Papan Harga</p>
-                      <p class="text-gray-600">= ((Offer Tertinggi - Bid Terendah) / Tick Size) + 1</p>
-                      <p class="text-gray-600">= ((${formatNumber(result.offerTertinggi)} - ${formatNumber(result.bidTerendah)}) / ${result.tick}) + 1</p>
-                      <p class="font-semibold text-blue-600 mt-1">= ${formatNumber(result.jumlahPapan)} papan</p>
-                    </div>
-
-                    <div class="bg-white rounded-lg p-3 border border-gray-200">
-                      <p class="font-medium text-gray-700 mb-1">2. Rata-rata Per Papan</p>
-                      <p class="text-gray-600">= (Total Bid + Total Offer) / Jumlah Papan</p>
-                      <p class="text-gray-600">= (${formatNumber(result.totalBid)} + ${formatNumber(result.totalOffer)}) / ${formatNumber(result.jumlahPapan)}</p>
-                      <p class="font-semibold text-blue-600 mt-1">= ${formatNumber(result.rataPerPapan)} lot/papan</p>
-                    </div>
-
-                    <div class="bg-white rounded-lg p-3 border border-gray-200">
-                      <p class="font-medium text-gray-700 mb-1">3. Papan yang Terdorong</p>
-                      <p class="text-gray-600">= Buy Lot / Rata Per Papan</p>
-                      <p class="text-gray-600 mb-1">= ${formatNumber(result.buyLot)} / ${formatNumber(result.rataPerPapan)}</p>
-                      <p class="font-semibold text-green-600">HIGH: ${formatNumber(result.papanCountHigh)} papan</p>
-                      <p class="font-semibold text-green-600">LOW: ${formatNumber(result.papanCountLow)} papan (50% dari HIGH)</p>
-                    </div>
-
-                    <div class="bg-white rounded-lg p-3 border border-gray-200">
-                      <p class="font-medium text-gray-700 mb-1">4. Baseline (5% dari Buy Avg)</p>
-                      <p class="text-gray-600">= ${formatNumber(result.buyAvg)} × 5%</p>
-                      <p class="font-semibold text-blue-600 mt-1">= ${formatNumber(result.fivePercent)} poin</p>
-                    </div>
-
-                    <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-3 border-2 border-green-300">
-                      <p class="font-medium text-gray-800 mb-1">🎯 TARGET LOW</p>
-                      <p class="text-gray-700">= Buy Avg + Baseline + (Papan Terdorong × Tick)</p>
-                      <p class="text-gray-700">= ${formatNumber(result.buyAvg)} + ${formatNumber(result.fivePercent)} + (${formatNumber(result.papanCountLow)} × ${result.tick})</p>
-                      <p class="text-gray-700">= ${formatNumber(result.buyAvg)} + ${formatNumber(result.fivePercent)} + ${formatNumber(result.papanCountLow * result.tick)}</p>
-                      <p class="text-xl font-bold text-green-600 mt-2">= Rp ${formatNumber(result.targetLow)}</p>
-                      <p class="text-sm font-semibold text-green-600">(+${formatNumber(result.percentLow)}%)</p>
-                    </div>
-
-                    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-3 border-2 border-blue-300">
-                      <p class="font-medium text-gray-800 mb-1">🚀 TARGET HIGH</p>
-                      <p class="text-gray-700">= Buy Avg + Baseline + (Papan Terdorong × Tick)</p>
-                      <p class="text-gray-700">= ${formatNumber(result.buyAvg)} + ${formatNumber(result.fivePercent)} + (${formatNumber(result.papanCountHigh)} × ${result.tick})</p>
-                      <p class="text-gray-700">= ${formatNumber(result.buyAvg)} + ${formatNumber(result.fivePercent)} + ${formatNumber(result.papanCountHigh * result.tick)}</p>
-                      <p class="text-xl font-bold text-blue-600 mt-2">= Rp ${formatNumber(result.targetHigh)}</p>
-                      <p class="text-sm font-semibold text-blue-600">(+${formatNumber(result.percentHigh)}%)</p>
-                    </div>
+                <div class="bg-white rounded-lg p-3 border border-gray-200">
+                  <p class="font-medium text-gray-700 mb-1">2. Rata-rata Per Papan</p>
+                  <div class="overflow-x-auto">
+                    <p class="text-gray-600 whitespace-nowrap">= (Total Bid + Total Offer) / Jumlah Papan</p>
+                    <p class="text-gray-600 whitespace-nowrap">= (${formatNumber(result.totalBid)} + ${formatNumber(result.totalOffer)}) / ${formatNumber(result.jumlahPapan)}</p>
                   </div>
+                  <p class="font-semibold text-blue-600 mt-1 break-all">= ${formatNumber(result.rataPerPapan)} lot/papan</p>
+                </div>
+
+                <div class="bg-white rounded-lg p-3 border border-gray-200">
+                  <p class="font-medium text-gray-700 mb-1">3. Papan yang Terdorong</p>
+                  <div class="overflow-x-auto">
+                    <p class="text-gray-600 whitespace-nowrap">= Buy Lot / Rata Per Papan</p>
+                    <p class="text-gray-600 mb-1 whitespace-nowrap">= ${formatNumber(result.buyLot)} / ${formatNumber(result.rataPerPapan)}</p>
+                  </div>
+                  <p class="font-semibold text-green-600 break-all">HIGH: ${formatNumber(result.papanCountHigh)} papan</p>
+                  <p class="font-semibold text-green-600 break-all">LOW: ${formatNumber(result.papanCountLow)} papan (50% dari HIGH)</p>
+                </div>
+
+                <div class="bg-white rounded-lg p-3 border border-gray-200">
+                  <p class="font-medium text-gray-700 mb-1">4. Baseline (5% dari Buy Avg)</p>
+                  <div class="overflow-x-auto">
+                    <p class="text-gray-600 whitespace-nowrap">= ${formatNumber(result.buyAvg)} × 5%</p>
+                  </div>
+                  <p class="font-semibold text-blue-600 mt-1 break-all">= ${formatNumber(result.fivePercent)} poin</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-3 border-2 border-green-300">
+                  <p class="font-medium text-gray-800 mb-1">🎯 TARGET LOW</p>
+                  <div class="overflow-x-auto">
+                    <p class="text-gray-700 whitespace-nowrap">= Buy Avg + Baseline + (Papan Terdorong × Tick)</p>
+                    <p class="text-gray-700 whitespace-nowrap">= ${formatNumber(result.buyAvg)} + ${formatNumber(result.fivePercent)} + (${formatNumber(result.papanCountLow)} × ${result.tick})</p>
+                    <p class="text-gray-700 whitespace-nowrap">= ${formatNumber(result.buyAvg)} + ${formatNumber(result.fivePercent)} + ${formatNumber(result.papanCountLow * result.tick)}</p>
+                  </div>
+                  <p class="text-lg sm:text-xl font-bold text-green-600 mt-2 break-all">= Rp ${formatNumber(result.targetLow)}</p>
+                  <p class="text-xs sm:text-sm font-semibold text-green-600 break-all">(+${formatNumber(result.percentLow)}%)</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-3 border-2 border-blue-300">
+                  <p class="font-medium text-gray-800 mb-1">🚀 TARGET HIGH</p>
+                  <div class="overflow-x-auto">
+                    <p class="text-gray-700 whitespace-nowrap">= Buy Avg + Baseline + (Papan Terdorong × Tick)</p>
+                    <p class="text-gray-700 whitespace-nowrap">= ${formatNumber(result.buyAvg)} + ${formatNumber(result.fivePercent)} + (${formatNumber(result.papanCountHigh)} × ${result.tick})</p>
+                    <p class="text-gray-700 whitespace-nowrap">= ${formatNumber(result.buyAvg)} + ${formatNumber(result.fivePercent)} + ${formatNumber(result.papanCountHigh * result.tick)}</p>
+                  </div>
+                  <p class="text-lg sm:text-xl font-bold text-blue-600 mt-2 break-all">= Rp ${formatNumber(result.targetHigh)}</p>
+                  <p class="text-xs sm:text-sm font-semibold text-blue-600 break-all">(+${formatNumber(result.percentHigh)}%)</p>
                 </div>
               </div>
             </div>
           </div>
-        `;
+        </div>
+      </div>
+    `;
       }).join('');
 
       container.innerHTML = `
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-2xl font-bold text-gray-800 mr-2">Hasil Perhitungan</h2>
-          <button onclick="handleClearAllHistory()" class="text-sm bg-red-100 hover:bg-red-200 text-red-600 px-4 py-2 rounded-lg transition-colors">
-            Hapus semua
-          </button>
-        </div>
-        <p class="text-sm text-gray-500 mb-4">Riwayat perhitungan tersimpan otomatis</p>
-        <div class="space-y-4">${historyHTML}</div>
-      `;
+    <div class="flex justify-between items-center mb-4 gap-3 flex-wrap">
+      <h2 class="text-2xl font-bold text-gray-800">Hasil Perhitungan</h2>
+      <button onclick="handleClearAllHistory()" class="text-sm bg-red-100 hover:bg-red-200 text-red-600 px-4 py-2 rounded-lg transition-colors flex-shrink-0">
+        Hapus semua
+      </button>
+    </div>
+    <p class="text-sm text-gray-500 mb-4">Riwayat perhitungan tersimpan otomatis</p>
+    <div class="space-y-4">${historyHTML}</div>
+  `;
       container.classList.remove('hidden');
     }
 
