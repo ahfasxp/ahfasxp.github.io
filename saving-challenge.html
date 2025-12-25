@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Big Alpha - Saving Challenge</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .logo sup {
+            color: #00bcd4;
+            font-size: 20px;
+        }
+
+        .title {
+            font-size: 48px;
+            font-weight: bold;
+            color: #1565c0;
+            text-shadow: 3px 3px 0px rgba(21, 101, 192, 0.2);
+            margin: 20px 0;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .box {
+            background: white;
+            border: 3px solid #1565c0;
+            border-radius: 10px;
+            padding: 25px 10px 15px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .box.saved {
+            background: #ffd700;
+            border-color: #ffa000;
+        }
+
+        .box-number {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            font-size: 10px;
+            color: white;
+            background: #1565c0;
+            padding: 3px 7px;
+            border-bottom-right-radius: 4px;
+            font-weight: bold;
+        }
+
+        .box.saved .box-number {
+            background: #ffa000;
+        }
+
+        .box-amount {
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .summary {
+            background: #ffd700;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .summary-text {
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .total-saved {
+            font-size: 28px;
+            color: #d84315;
+            margin-top: 10px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-reset {
+            background: #d84315;
+            color: white;
+        }
+
+        .btn-reset:hover {
+            background: #bf360c;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 20px 15px;
+                border-radius: 15px;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            .title {
+                font-size: 32px;
+            }
+
+            .subtitle {
+                font-size: 16px;
+            }
+
+            .grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 8px;
+            }
+
+            .box {
+                padding: 20px 5px 10px 5px;
+                min-height: 65px;
+                border: 2px solid #1565c0;
+            }
+
+            .box-number {
+                font-size: 9px;
+                padding: 2px 5px;
+                top: 3px;
+                left: 3px;
+            }
+
+            .box-amount {
+                font-size: 16px;
+            }
+
+            .summary {
+                padding: 20px 15px;
+            }
+
+            .summary-text {
+                font-size: 20px;
+            }
+
+            .total-saved {
+                font-size: 22px;
+            }
+
+            button {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 18px;
+            }
+
+            .title {
+                font-size: 28px;
+            }
+
+            .subtitle {
+                font-size: 14px;
+            }
+
+            .grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 6px;
+            }
+
+            .box {
+                padding: 18px 5px 8px 5px;
+                min-height: 60px;
+                border-radius: 8px;
+            }
+
+            .box-number {
+                font-size: 8px;
+                padding: 2px 4px;
+            }
+
+            .box-amount {
+                font-size: 14px;
+            }
+
+            .summary-text {
+                font-size: 18px;
+            }
+
+            .total-saved {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">BIG ALPHA<sup>®</sup></div>
+            <div class="title">Saving<br>Challenge</div>
+            <div class="subtitle">Rp30 juta dalam 52 minggu</div>
+        </div>
+
+        <div class="grid" id="grid"></div>
+
+        <div class="summary">
+            <div class="summary-text">SAVED Rp30 juta</div>
+            <div class="total-saved">Total Tersimpan: Rp<span id="totalSaved">0</span></div>
+        </div>
+
+        <div class="buttons">
+            <button class="btn-reset" onclick="resetChallenge()">Reset Challenge</button>
+        </div>
+
+        <div class="footer">(*) dalam ribuan</div>
+    </div>
+
+    <script>
+        const amounts = [
+            20, 50, 80, 400, 150, 200, 500,
+            300, 350, 400, 450, 500, 550, 600,
+            80, 1000, 20, 50, 500, 150, 200,
+            900, 700, 1000, 800, 1500, 900, 1000,
+            250, 300, 350, 400, 450, 500, 550,
+            600, 1000, 700, 1000, 800, 700, 400,
+            900, 1500, 250, 1500, 700, 1000, 100,
+            100, 2000, 600
+        ];
+
+        let savedBoxes = JSON.parse(localStorage.getItem('savedBoxes')) || [];
+
+        function init() {
+            const grid = document.getElementById('grid');
+            grid.innerHTML = '';
+
+            amounts.forEach((amount, index) => {
+                const box = document.createElement('div');
+                box.className = 'box';
+                if (savedBoxes.includes(index)) {
+                    box.classList.add('saved');
+                }
+
+                box.innerHTML = `
+                    <div class="box-number">${String(index + 1).padStart(2, '0')}</div>
+                    <div class="box-amount">${amount.toLocaleString('id-ID')}</div>
+                `;
+
+                box.onclick = () => toggleBox(index);
+                grid.appendChild(box);
+            });
+
+            updateTotal();
+        }
+
+        function toggleBox(index) {
+            const boxIndex = savedBoxes.indexOf(index);
+            if (boxIndex > -1) {
+                savedBoxes.splice(boxIndex, 1);
+            } else {
+                savedBoxes.push(index);
+            }
+
+            localStorage.setItem('savedBoxes', JSON.stringify(savedBoxes));
+            init();
+        }
+
+        function updateTotal() {
+            let total = 0;
+            savedBoxes.forEach(index => {
+                total += amounts[index];
+            });
+
+            document.getElementById('totalSaved').textContent = total.toLocaleString('id-ID');
+        }
+
+        function resetChallenge() {
+            if (confirm('Apakah Anda yakin ingin mereset challenge ini?')) {
+                savedBoxes = [];
+                localStorage.removeItem('savedBoxes');
+                init();
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
