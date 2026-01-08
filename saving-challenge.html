@@ -89,6 +89,21 @@
         .box.saved {
             background: #ffd700;
             border-color: #ffa000;
+            position: relative;
+        }
+
+        .box.saved::before {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 24px;
+            border: solid #d84315;
+            border-width: 0 5px 5px 0;
+            transform: rotate(45deg);
+            top: 50%;
+            left: 50%;
+            margin-top: -16px;
+            margin-left: -6px;
         }
 
         .box-number {
